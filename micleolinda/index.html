@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>✨ Cleo - Para Ti ✨</title>
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+    <!-- Fondo animado -->
+    <canvas id="stars-canvas"></canvas>
+
+    <div class="app-container">
+        <header class="app-header">
+            <h1 class="app-title">🌟 Cleo 🌟</h1>
+            <button id="music-btn" class="icon-btn">🔇</button>
+        </header>
+
+        <main class="app-main">
+            <h2 class="subtitle">Nuestro universo mágico 💖</h2>
+            <p class="description">
+                Bienvenida, mi amor 💕  
+                Aquí comienza nuestra aventura en este mundo digital que creé solo para ti.
+            </p>
+
+            <div class="btn-group">
+                <a href="mapa.html" class="app-btn">🚀 Iniciar aventura</a>
+                <a href="como-jugar.html" class="app-btn">✨ Sorpresas</a>
+                <a href="final.html" class="app-btn">💌 Carta de amor</a>
+            </div>
+        </main>
+    </div>
+
+    <audio id="bg-music" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg" />
+    </audio>
+
+    <script src="stars.js"></script>
+    <script>
+        const music = document.getElementById("bg-music");
+        const musicBtn = document.getElementById("music-btn");
+
+        musicBtn.addEventListener("click", async () => {
+            try {
+                if (music.paused) {
+                    await music.play();
+                    musicBtn.textContent = "🎵";
+                } else {
+                    music.pause();
+                    musicBtn.textContent = "🔇";
+                }
+            } catch (error) {
+                console.log("Error al reproducir música:", error);
+            }
+        });
+    </script>
+</body>
+</html>

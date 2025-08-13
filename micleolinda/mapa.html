@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Juego Constelaciones + Retos</title>
+<link rel="stylesheet" href="mapa.css" />
+</head>
+<body>
+
+<div class="app-container">
+
+  <!-- Pantalla Inicio -->
+  <section id="pantalla-inicio" class="pantalla activo">
+    <h1>Bienvenido al Juego de Constelaciones</h1>
+    <button id="btn-iniciar">Iniciar Juego</button>
+    <button onclick="location.href='index.html'">Volver al inicio</button>
+  </section>
+
+   
+
+  <section id="pantalla-juego" class="pantalla">
+    <h1>Toca una constelación</h1>
+    <div id="constelaciones-container"></div>
+    <div id="mensaje">Toca una constelación para ver un mensaje</div>
+    <button id="btn-siguiente">Siguiente: Retos</button>
+    <button id="btn-volver-inicio">Volver al Inicio</button>
+  </section>
+
+  <!-- Pantalla Retos -->
+  <section id="pantalla-retos" class="pantalla">
+    <h1>Retos para ti 💖</h1>
+    <p>Aquí están los retos que te he preparado:</p>
+    <ul class="ret-list">
+      <li>Me mandes fotitos de tu carita por una semana.</li>
+      <li>Aprenderse un trend de TikTok y grabarlo para enviarlo..</li>
+      <li>Hoy mándame un mensaje diciendo cómo te sientes y algo bonito que te haya pasado.</li>
+      <li>escribe una lista con diez cosas que sueñas vivir conmigo cuando nos conozcamos y envíamela al final del día..</li>
+    </ul>
+    <button id="btn-volver-juego">Volver al Juego</button>
+    <button id="btn-volver-inicio-2">Volver al Inicio</button>
+  </section>
+            
+
+
+
+</div>
+
+<script src="datos.js"></script>
+<script src="mapa.js"></script>
+
+</body>
+</html>
+
+
+
+

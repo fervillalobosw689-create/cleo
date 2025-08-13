@@ -1,0 +1,157 @@
+/* Base y fondo */
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: radial-gradient(ellipse at center, #0a0a1a 0%, #000010 100%);
+    font-family: 'Merriweather', serif;
+    color: #f0e6d2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    overflow: hidden;
+    padding: 30px 15px;
+    text-align: center;
+  }
+  
+  /* Título */
+  h1 {
+    font-weight: 700;
+    font-size: 2.2rem;
+    letter-spacing: 0.12em;
+    color: #f6c9c9;
+    text-shadow: 0 0 12px #f6c9c9aa;
+    user-select: none;
+  }
+  
+  /* Contenedor del sobre */
+  .secret-box {
+    width: 350px;
+    height: 230px;
+    perspective: 1000px;
+    cursor: pointer;
+    outline: none;
+    position: relative;
+    z-index: 10;
+    user-select: none;
+    transition: filter 0.3s ease;
+  }
+  .secret-box:hover {
+    filter: drop-shadow(0 0 10px #f6c9c9bb);
+  }
+  
+  /* Sobre */
+  .envelope {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(145deg, #5a4067, #7c527f);
+    border-radius: 18px 18px 8px 8px;
+    box-shadow:
+      inset 0 0 12px #a97ebf44,
+      0 12px 22px rgba(124, 82, 127, 0.45);
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  /* Solapa (flap) */
+  .flap {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 85px;
+    background: linear-gradient(135deg, #a57aaf, #6e3f6b);
+    clip-path: polygon(0 0, 50% 100%, 100% 0);
+    transform-origin: top center;
+    transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+    z-index: 20;
+    filter: drop-shadow(0 0 6px #d89ed1cc);
+  }
+  
+  /* Sobre abierto: girar la solapa */
+  .secret-box.open .flap {
+    transform: rotateX(180deg);
+  }
+  
+  /* Carta adentro */
+  .letter {
+    padding: 30px 30px 28px 30px;
+    margin-top: 70px;
+    height: 140px;
+    overflow-y: auto;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #f4f0e9;
+    opacity: 0;
+    transition: opacity 1.2s ease 0.9s;
+    user-select: text;
+    position: relative;
+    z-index: 5;
+  
+    /* Fondo tipo papel antiguo */
+    background: linear-gradient(135deg, #f9f4ec 0%, #e7e1d1 100%);
+    box-shadow: inset 0 0 20px #c9bca8;
+    border-radius: 8px;
+    font-family: 'Georgia', serif;
+    font-style: italic;
+    letter-spacing: 0.03em;
+    color: #4a3e29;
+    scrollbar-width: thin;
+    scrollbar-color: #a6855b #f0ead4;
+  }
+  
+  /* Scrollbar personalizado para Webkit */
+  .letter::-webkit-scrollbar {
+    width: 8px;
+  }
+  .letter::-webkit-scrollbar-track {
+    background: #f0ead4;
+    border-radius: 8px;
+  }
+  .letter::-webkit-scrollbar-thumb {
+    background-color: #a6855b;
+    border-radius: 8px;
+    border: 2px solid #f0ead4;
+  }
+  
+  /* Mostrar carta cuando abierto */
+  .secret-box.open .letter {
+    opacity: 1;
+  }
+  
+  /* Botón V en esquina superior izquierda */
+  button {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: #7c527fcc;
+    border: none;
+    color: #f4e9f3;
+    font-weight: 700;
+    font-size: 1.3rem;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    cursor: pointer;
+    box-shadow: 0 0 10px #d89ed1;
+    transition: background 0.3s ease;
+    user-select: none;
+    z-index: 30;
+  }
+  button:hover {
+    background: #a57bbfcc;
+  }
+  
+  /* Canvas de constelaciones */
+  #starsCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 0;
+  }
+  

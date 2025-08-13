@@ -1,0 +1,157 @@
+/* ====== Reset + variables ====== */
+:root{
+    --pink:#ff6ec7;
+    --lav:#a16eff;
+    --glass-bg: rgba(255,255,255,0.08);
+    --glass-brd: rgba(255,255,255,0.18);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family: 'Poppins', system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    color:#fff;
+    background:
+      radial-gradient(1200px 700px at 80% 10%, rgba(161,110,255,0.20), transparent 55%),
+      radial-gradient(900px 600px at 10% 90%, rgba(255,110,199,0.20), transparent 60%),
+      linear-gradient(180deg,#05060e,#0b0d1c 50%, #04050b 100%);
+    overflow-x:hidden;
+  }
+  
+  /* ====== Canvas de estrellas al fondo ====== */
+  #stars-canvas{
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100%;
+    z-index:0;            /* detrás del contenido */
+    pointer-events:none;  /* no bloquea clics */
+    background: transparent; /* fallback ya lo da body */
+  }
+  
+  /* Nebulosas en movimiento muy sutil */
+  body::after{
+    content:"";
+    position:fixed;
+    inset:-10%;
+    background:
+      radial-gradient(700px 500px at 20% 30%, rgba(255,110,199,0.10), transparent 60%),
+      radial-gradient(800px 700px at 80% 70%, rgba(161,110,255,0.10), transparent 60%);
+    filter: blur(40px);
+    animation: drift 22s ease-in-out infinite alternate;
+    z-index:1;
+    pointer-events:none;
+  }
+  @keyframes drift{
+    from{ transform: translate3d(-2%, -1%, 0) scale(1.02); opacity:.9 }
+    to  { transform: translate3d( 2%,  1%, 0) scale(1.05); opacity:1 }
+  }
+  
+  /* ====== Contenedor “app” (glassmorphism) ====== */
+  .app-container{
+    position:relative;
+    z-index:2; /* encima de estrellas/nebulosa */
+    max-width: 880px;
+    margin: clamp(24px,6vh,60px) auto;
+    padding: clamp(20px, 4vw, 40px);
+    backdrop-filter: blur(10px) saturate(120%);
+    background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+    border: 1px solid var(--glass-brd);
+    border-radius: 22px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.45);
+    animation: cardIn .9s ease both;
+  }
+  @keyframes cardIn{
+    from{ transform: translateY(14px) scale(.98); opacity:0 }
+    to  { transform: translateY(0)    scale(1)   ; opacity:1 }
+  }
+  
+  /* ====== Header ====== */
+  .app-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    margin-bottom: 14px;
+  }
+  .app-title{
+    font-size: clamp(28px,4.2vw,44px);
+    line-height:1.1;
+    font-weight:800;
+    letter-spacing:.5px;
+    background: conic-gradient(from 180deg at 50% 50%, var(--pink), #ffd1ff, var(--lav), #e1b0ff, var(--pink));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    text-shadow: 0 0 28px rgba(255, 118, 210, 0.25);
+  }
+  
+  /* ====== Tipos ====== */
+  .subtitle{ font-size: clamp(18px,2.2vw,22px); opacity:.95; margin-top:6px }
+  .description{
+    margin: 14px 0 18px;
+    line-height:1.6;
+    opacity:.92;
+  }
+  
+  /* ====== Grupo de botones ====== */
+  .btn-group{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    justify-content:center;
+    margin-top: 10px;
+  }
+  
+  /* Botón principal */
+  .app-btn{
+    --grad: linear-gradient(135deg, var(--pink), var(--lav));
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    min-width:220px;
+    padding:14px 22px;
+    border-radius: 14px;
+    font-weight:700;
+    letter-spacing:.2px;
+    text-decoration:none;
+    color:#fff;
+    background: var(--grad);
+    box-shadow: 0 14px 40px rgba(161,110,255,0.35);
+    border: 1px solid rgba(255,255,255,0.16);
+    transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+  }
+  .app-btn:hover{ transform: translateY(-3px); filter: saturate(115%); box-shadow: 0 20px 56px rgba(161,110,255,0.42); }
+  .app-btn:active{ transform: translateY(0); }
+  
+  /* Botón fantasma */
+  .app-btn.alt{
+    background: rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.18);
+    box-shadow:none;
+  }
+  
+  /* Botón icono (música) */
+  .icon-btn{
+    background: rgba(255,255,255,0.10);
+    border: 1px solid rgba(255,255,255,0.18);
+    width:44px; height:44px;
+    border-radius:12px;
+    display:grid; place-items:center;
+    font-size:20px;
+    color:#fff;
+    cursor:pointer;
+    transition: transform .15s ease, background .2s ease;
+  }
+  .icon-btn:hover{ transform: translateY(-2px) scale(1.04); }
+  .icon-btn:active{ transform: translateY(0) scale(.98); }
+  
+  /* Utilidad para espacios */
+  .stack{ display:flex; flex-direction:column; gap:10px }
+  
+  /* Responsive */
+  @media (max-width:640px){
+    .app-container{ padding:18px }
+    .app-btn{ min-width:unset; width:100% }
+  }
+  

@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Laberinto de Constelaciones</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap');
+
+  /* Fondo estrellado */
+  body {
+    margin: 0; padding: 20px;
+    font-family: 'Montserrat', sans-serif;
+    background:
+      radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Animación de estrellas pequeñas */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      radial-gradient(2px 2px at 20% 30%, #fff, transparent),
+      radial-gradient(1.5px 1.5px at 40% 80%, #fff, transparent),
+      radial-gradient(2px 2px at 70% 60%, #fff, transparent),
+      radial-gradient(1px 1px at 85% 40%, #fff, transparent);
+    background-repeat: repeat;
+    background-size: 200px 200px;
+    animation: star-move 30s linear infinite;
+    z-index: 0;
+  }
+  @keyframes star-move {
+    from {background-position: 0 0, 0 0, 0 0, 0 0;}
+    to {background-position: 200px 200px, 200px 200px, 200px 200px, 200px 200px;}
+  }
+
+  h1 {
+    margin-bottom: 15px;
+    text-shadow: 0 0 10px #6cf;
+    letter-spacing: 2px;
+  }
+
+  #maze {
+    position: relative;
+    width: 480px;
+    height: 480px;
+    background: rgba(0,0,40,0.8);
+    border-radius: 20px;
+    box-shadow: 0 0 30px #1e90ffcc;
+    user-select: none;
+    border: 2px solid #3a72f0;
+    z-index: 1;
+  }
+  .cell {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background: #2a3a5b;
+    box-sizing: border-box;
+    border-radius: 8px;
+    transition: background 0.3s ease;
+  }
+  .wall {
+    background: #1b2242;
+    box-shadow: inset 0 0 12px #000a2a;
+  }
+  #player {
+    position: absolute;
+    width: 38px;
+    height: 38px;
+    background: radial-gradient(circle at center, #00ff99, #007f5c);
+    border-radius: 50%;
+    box-shadow: 0 0 20px #00ff9955;
+    transition: top 0.15s ease, left 0.15s ease;
+    z-index: 10;
+  }
+  #goal {
+    position: absolute;
+    width: 38px;
+    height: 38px;
+    background: radial-gradient(circle at center, #ff3366, #99002b);
+    border-radius: 50%;
+    box-shadow: 0 0 25px #ff336699;
+  }
+
+  #controls {
+    margin-top: 25px;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+    z-index: 2;
+  }
+  button {
+    width: 70px;
+    height: 70px;
+    font-size: 34px;
+    font-weight: 700;
+    border-radius: 20px;
+    border: none;
+    background: linear-gradient(145deg, #1e90ff, #0059b3);
+    color: white;
+    cursor: pointer;
+    user-select: none;
+    box-shadow: 0 6px 10px #004080cc;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-shadow: 0 0 5px #003366;
+  }
+  button:hover {
+    background: linear-gradient(145deg, #0059b3, #1e90ff);
+    box-shadow: 0 8px 20px #0073ffcc;
+  }
+  button:active {
+    background: #003366;
+    box-shadow: inset 0 2px 8px #001a40;
+  }
+  #back-btn {
+    margin-top: 30px;
+    padding: 12px 28px;
+    font-size: 20px;
+    border-radius: 25px;
+    background: linear-gradient(145deg, #ff3366, #99002b);
+    box-shadow: 0 6px 12px #66001a;
+    font-weight: 700;
+    text-shadow: 0 0 8px #33000d;
+    z-index: 2;
+  }
+  #back-btn:hover {
+    background: linear-gradient(145deg, #99002b, #ff3366);
+    box-shadow: 0 8px 20px #ff3366cc;
+  }
+  #back-btn:active {
+    background: #66001a;
+    box-shadow: inset 0 2px 8px #33000d;
+  }
+
+  /* Modal */
+  #modal {
+    display: none;
+    position: fixed;
+    top:0; left:0; right:0; bottom:0;
+    background: rgba(0,0,0,0.95);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    overflow: auto;
+    padding: 30px 15px;
+  }
+  #modal-content {
+    background: #111a33;
+    padding: 25px;
+    border-radius: 20px;
+    max-width: 95vw;
+    max-height: 90vh;
+    text-align: center;
+    overflow: auto;
+    box-sizing: border-box;
+    box-shadow: 0 0 20px #1e90ffcc;
+  }
+  #modal-content h2 {
+    margin-bottom: 20px;
+    color: #00ff99;
+    text-shadow: 0 0 12px #00ff99aa;
+  }
+  #modal-content img {
+    max-width: 100%;
+    max-height: 80vh;
+    height: auto;
+    width: auto;
+    border-radius: 15px;
+    border: 4px solid #00ff99;
+    object-fit: contain;
+    box-shadow: 0 0 20px #00ff9955;
+  }
+  #modal-close {
+    margin-top: 25px;
+    padding: 12px 28px;
+    font-size: 18px;
+    background: linear-gradient(145deg, #00ff99, #007f5c);
+    border: none;
+    border-radius: 25px;
+    color: #004022;
+    cursor: pointer;
+    font-weight: 700;
+    box-shadow: 0 6px 12px #004022cc;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+  }
+  #modal-close:hover {
+    background: linear-gradient(145deg, #007f5c, #00ff99);
+    box-shadow: 0 8px 20px #00ff9988;
+  }
+  #modal-close:active {
+    background: #004022;
+    box-shadow: inset 0 2px 8px #002811;
+  }
+
+  /* Responsive */
+  @media (max-width: 520px) {
+    #maze {
+      width: 320px;
+      height: 320px;
+    }
+    .cell {
+      width: 26.6px;
+      height: 26.6px;
+      border-radius: 6px;
+    }
+    #player, #goal {
+      width: 25px;
+      height: 25px;
+    }
+    button {
+      width: 60px;
+      height: 60px;
+      font-size: 28px;
+      border-radius: 16px;
+    }
+    #back-btn {
+      font-size: 18px;
+      padding: 10px 24px;
+      border-radius: 20px;
+    }
+    #modal-content {
+      padding: 15px;
+    }
+    #modal-close {
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 20px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<h1>Laberinto de Constelaciones</h1>
+<div id="maze" aria-label="Laberinto de constelaciones"></div>
+
+<div id="controls" role="group" aria-label="Controles de movimiento">
+  <button id="up" aria-label="Mover arriba">⬆️</button>
+  <button id="left" aria-label="Mover izquierda">⬅️</button>
+  <button id="down" aria-label="Mover abajo">⬇️</button>
+  <button id="right" aria-label="Mover derecha">➡️</button>
+</div>
+
+<button id="back-btn" aria-label="Volver a la página anterior">🔙 Volver</button>
+
+<!-- Modal -->
+<div id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div id="modal-content">
+    <h2 id="modal-title">¡Felicidades! 🎉</h2>
+    <img src="ChatGPT Image 12 ago 2025, 10_54_59 p.m..png" alt="Foto de ustedes dos celebrando" />
+    <br />
+    <button id="modal-close" aria-label="Cerrar modal">Cerrar</button>
+  </div>
+</div>
+
+<script>
+  const mazeElement = document.getElementById('maze');
+  const modal = document.getElementById('modal');
+  const modalCloseBtn = document.getElementById('modal-close');
+  const backBtn = document.getElementById('back-btn');
+
+  // Mapa 12x12: 0 camino, 1 pared
+  const mazeMap = [
+    [0,1,0,1,0,0,0,1,0,1,0,0],
+    [0,1,0,1,0,1,0,1,0,1,1,0],
+    [0,0,0,0,0,1,0,0,0,0,1,0],
+    [1,1,1,1,0,1,1,1,1,0,1,0],
+    [0,0,0,1,0,0,0,0,1,0,0,0],
+    [0,1,0,1,1,1,1,0,1,1,1,0],
+    [0,1,0,0,0,0,1,0,0,0,1,0],
+    [0,1,1,1,1,0,1,1,1,0,1,0],
+    [0,0,0,0,1,0,0,0,1,0,0,0],
+    [1,1,1,0,1,1,1,0,1,1,1,0],
+    [0,0,0,0,0,0,1,0,0,0,0,0],
+    [0,1,1,1,1,0,1,1,1,1,1,0],
+  ];
+
+  let cellSize = 40;
+  function adjustCellSize() {
+    cellSize = window.innerWidth <= 520 ? 26.6 : 40;
+  }
+  adjustCellSize();
+  window.addEventListener('resize', () => {
+    adjustCellSize();
+    drawMaze();
+    updatePlayerPosition();
+    updateGoalPosition();
+  });
+
+  function drawMaze() {
+    mazeElement.innerHTML = '';
+    for(let r=0; r<12; r++){
+      for(let c=0; c<12; c++){
+        const cell = document.createElement('div');
+        cell.classList.add('cell');
+        if(mazeMap[r][c] === 1) cell.classList.add('wall');
+        cell.style.top = (r * cellSize) + 'px';
+        cell.style.left = (c * cellSize) + 'px';
+        cell.style.width = cellSize + 'px';
+        cell.style.height = cellSize + 'px';
+        mazeElement.appendChild(cell);
+      }
+    }
+    mazeElement.appendChild(player);
+    mazeElement.appendChild(goal);
+  }
+
+  const player = document.createElement('div');
+  player.id = 'player';
+  mazeElement.appendChild(player);
+
+  const goal = document.createElement('div');
+  goal.id = 'goal';
+  mazeElement.appendChild(goal);
+
+  let playerPos = {r: 0, c: 0};
+  let goalPos = {r: 11, c: 11};
+
+  function updatePlayerPosition() {
+    player.style.top = (playerPos.r * cellSize + 1) + 'px';
+    player.style.left = (playerPos.c * cellSize + 1) + 'px';
+    player.style.width = (cellSize - 2) + 'px';
+    player.style.height = (cellSize - 2) + 'px';
+  }
+
+  function updateGoalPosition() {
+    goal.style.top = (goalPos.r * cellSize + 1) + 'px';
+    goal.style.left = (goalPos.c * cellSize + 1) + 'px';
+    goal.style.width = (cellSize - 2) + 'px';
+    goal.style.height = (cellSize - 2) + 'px';
+  }
+
+  function movePlayer(dr, dc) {
+    const newR = playerPos.r + dr;
+    const newC = playerPos.c + dc;
+    if(newR >= 0 && newR < 12 &&
+       newC >= 0 && newC < 12 &&
+       mazeMap[newR][newC] === 0){
+      playerPos = {r: newR, c: newC};
+      updatePlayerPosition();
+      checkWin();
+    }
+  }
+
+  document.getElementById('up').addEventListener('click', () => movePlayer(-1,0));
+  document.getElementById('down').addEventListener('click', () => movePlayer(1,0));
+  document.getElementById('left').addEventListener('click', () => movePlayer(0,-1));
+  document.getElementById('right').addEventListener('click', () => movePlayer(0,1));
+
+  window.addEventListener('keydown', e => {
+    switch(e.key){
+      case 'ArrowUp': movePlayer(-1,0); break;
+      case 'ArrowDown': movePlayer(1,0); break;
+      case 'ArrowLeft': movePlayer(0,-1); break;
+      case 'ArrowRight': movePlayer(0,1); break;
+    }
+  });
+
+  backBtn.addEventListener('click', () => window.history.back());
+
+  modalCloseBtn.addEventListener('click', () => modal.style.display = 'none');
+  modal.addEventListener('click', e => {
+    if(e.target === modal) modal.style.display = 'none';
+  });
+
+  function checkWin() {
+    if(playerPos.r === goalPos.r && playerPos.c === goalPos.c){
+      modal.style.display = 'flex';
+    }
+  }
+
+  drawMaze();
+  updatePlayerPosition();
+  updateGoalPosition();
+
+</script>
+
+</body>
+</html>

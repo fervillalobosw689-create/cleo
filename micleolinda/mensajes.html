@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mensaje Secreto Profesional</title>
+  <style>
+    /* Reset y base */
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f0f4f8, #d9e2ec);
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #222;
+      padding: 20px;
+    }
+    h1 {
+      font-size: 2.8rem;
+      color: #334e68;
+      margin-bottom: 40px;
+      font-weight: 700;
+    }
+
+    /* Contenedor del mensaje */
+    .secret-box {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      width: 90%;
+      max-width: 600px;
+      max-height: 300px;
+      padding: 25px 30px;
+      cursor: pointer;
+      overflow-y: auto;
+      transition: box-shadow 0.3s ease;
+      position: relative;
+      user-select: none;
+    }
+    .secret-box:hover {
+      box-shadow: 0 15px 40px rgba(51, 78, 104, 0.2);
+    }
+    .secret-box:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px #627d98;
+    }
+
+    /* Texto */
+    .secret-text {
+      font-size: 1.15rem;
+      line-height: 1.6;
+      color: #475569;
+      white-space: pre-wrap; /* para respetar saltos de línea */
+    }
+
+    /* Indicador para hacer clic */
+    .secret-box::after {
+      content: "🔒 Haz clic para revelar el mensaje";
+      position: absolute;
+      bottom: 15px;
+      right: 20px;
+      font-size: 0.85rem;
+      color: #627d98;
+      opacity: 0.6;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .secret-box.open::after {
+      opacity: 0;
+    }
+
+    /* Botón volver */
+    button {
+      margin-top: 35px;
+      background-color: #334e68;
+      color: white;
+      border: none;
+      padding: 14px 26px;
+      font-size: 1.3rem;
+      font-weight: 600;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      box-shadow: 0 5px 15px rgba(51,78,104,0.2);
+    }
+    button:hover {
+      background-color: #486581;
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+  <h1>💖 Mensaje Secreto Profesional 💖</h1>
+
+  <div class="secret-box" id="secretBox" tabindex="0" role="button" aria-pressed="false" aria-label="Haz clic para revelar el mensaje secreto">
+    <p class="secret-text" id="secretText"></p>
+  </div>
+
+  <button title="Volver al inicio" onclick="location.href='index.html'">V</button>
+
+  <script>
+    const secretBox = document.getElementById('secretBox');
+    const secretText = document.getElementById('secretText');
+
+    const message = `Aunque estemos separados por kilómetros, y las horas nos marquen diferentes ritmos, siempre compartimos ese mismo cielo inmenso que nos conecta de una manera única. La distancia no es barrera cuando el corazón se sincroniza con recuerdos, sueños y silencios compartidos. Cada estrella que veo me recuerda que, en algún lugar, tú también la estás mirando, y eso basta para sentirte cerca.`;
+
+    function typeWriter(text, element, speed = 40) {
+      let i = 0;
+      element.textContent = '';
+      function typing() {
+        if (i < text.length) {
+          element.textContent += text.charAt(i);
+          i++;
+          setTimeout(typing, speed);
+        }
+      }
+      typing();
+    }
+
+    secretBox.addEventListener('click', () => {
+      if (!secretBox.classList.contains('open')) {
+        secretBox.classList.add('open');
+        secretBox.setAttribute('aria-pressed', true);
+        typeWriter(message, secretText);
+      } else {
+        secretBox.classList.remove('open');
+        secretBox.setAttribute('aria-pressed', false);
+        secretText.textContent = '';
+      }
+    });
+
+    secretBox.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        secretBox.click();
+      }
+    });
+  </script>
+</body>
+</html>
